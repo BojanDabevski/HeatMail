@@ -1,7 +1,6 @@
 package diplomska.heatmail.service.impl;
 
 
-import diplomska.heatmail.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,7 +18,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtServiceImpl implements JwtService {
+public class JwtService {
 
     @Value("${security.jwt.secret-key}")
     private String secretKey;
