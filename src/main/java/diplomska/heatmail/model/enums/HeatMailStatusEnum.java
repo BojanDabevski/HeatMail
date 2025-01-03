@@ -6,8 +6,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum HeatMailStatusEnum {
 
     IMPORTED("IMPORTED"),
-    MAIL_SENT("MAIL_SENT"),
-    FINISHED("FINISHED");
+    MAIL_IN_PROCESS("MAIL_IN_PROCESS"),
+    FINISHED("FINISHED"),
+    FAILED("FAILED");
 
 
     private String value;

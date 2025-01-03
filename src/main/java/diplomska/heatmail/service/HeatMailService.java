@@ -1,12 +1,14 @@
 package diplomska.heatmail.service;
 
 import diplomska.heatmail.dto.HeatMailDto;
+import diplomska.heatmail.dto.MailDto;
 import diplomska.heatmail.model.HeatMail;
+import org.springframework.mail.SimpleMailMessage;
 
 import java.util.List;
 
 public interface HeatMailService {
-    void sendEmail(String to, String subject, String body);
+    void sendEmail(MailDto message);
 
     void sendEmailForMonth(String month, String year);
 
