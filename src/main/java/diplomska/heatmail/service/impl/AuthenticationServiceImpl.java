@@ -10,6 +10,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
@@ -29,6 +31,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public User signup(RegisterUserDto registerUserDto) {
         User user = new User()
+                .setId(String.valueOf(UUID.randomUUID()))
                 .setFullName(registerUserDto.getFullName())
                 .setEmail(registerUserDto.getEmail())
                 .setPassword(passwordEncoder.encode(registerUserDto.getPassword()));

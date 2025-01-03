@@ -20,8 +20,8 @@ public class UserApiController implements UserApi{
 
     @Override
     public ResponseEntity<User> getUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
+        User currentUser = userService.getUserFromToken();
+
         return ResponseEntity.ok(currentUser);
     }
 

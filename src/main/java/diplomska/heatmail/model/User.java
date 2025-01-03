@@ -17,9 +17,9 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
-    private Integer id;
+    private String id;
 
     @Column(nullable = false, name = "full_name")
     private String fullName;
@@ -73,11 +73,11 @@ public class User implements UserDetails {
         return true;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public User setId(Integer id) {
+    public User setId(String id) {
         this.id = id;
         return this;
     }

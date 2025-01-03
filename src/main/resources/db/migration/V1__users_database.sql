@@ -1,5 +1,5 @@
 CREATE TABLE Users (
-   id varchar(100) DEFAULT NULL,
+   id varchar(255) DEFAULT NULL,
    full_name varchar(100) DEFAULT NULL,
    email varchar(100) DEFAULT NULL,
    password varchar(100) DEFAULT NULL,

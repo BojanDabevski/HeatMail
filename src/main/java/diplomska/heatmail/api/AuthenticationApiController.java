@@ -5,6 +5,7 @@ import diplomska.heatmail.dto.LoginUserDto;
 import diplomska.heatmail.dto.RegisterUserDto;
 import diplomska.heatmail.model.User;
 import diplomska.heatmail.service.AuthenticationService;
+import diplomska.heatmail.service.UserService;
 import diplomska.heatmail.service.impl.JwtService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,15 +17,23 @@ public class AuthenticationApiController implements AuthenticationApi{
 
     private final AuthenticationService authenticationService;
 
-    public AuthenticationApiController(JwtService jwtService, AuthenticationService authenticationService) {
+    private final UserService userService;
+
+    public AuthenticationApiController(JwtService jwtService, AuthenticationService authenticationService, UserService userService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
+        this.userService = userService;
     }
 
     @Override
-    public ResponseEntity<User> register(RegisterUserDto registerUserDto) {
-        User registeredUser = authenticationService.signup(registerUserDto);
-        return ResponseEntity.ok(registeredUser);
+    public ResponseEntity<User> register(RegisterUserDto registerUserDto) throws Exception {
+        if (!userService.checkIfUserExists(registerUserDto.getEmail())) {
+            User registeredUser = authenticationService.signup(registerUserDto);
+            return ResponseEntity.ok(registeredUser);
+        } else {
+           throw new Exception("Email already exists");
+        }
+
     }
 
     @Override
@@ -35,7 +44,6 @@ public class AuthenticationApiController implements AuthenticationApi{
 
         LoginResponseDto loginResponse =  LoginResponseDto.builder()
                 .token(jwtToken)
-                .expiresIn(jwtService.getExpirationTime())
                 .build();
 
         return ResponseEntity.ok(loginResponse);

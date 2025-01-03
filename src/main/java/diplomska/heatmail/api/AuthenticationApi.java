@@ -14,7 +14,7 @@ public interface AuthenticationApi {
     @RequestMapping(value = "/signup",
             produces = { "application/json" },
             method = RequestMethod.POST)
-    ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto);
+    ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) throws Exception;
 
     @RequestMapping(value = "/login",
             produces = { "application/json" },
