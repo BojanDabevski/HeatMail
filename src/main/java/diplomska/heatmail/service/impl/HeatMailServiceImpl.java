@@ -11,13 +11,16 @@ import diplomska.heatmail.model.enums.HeatMailStatusEnum;
 import diplomska.heatmail.repository.HeatMailRepository;
 import diplomska.heatmail.service.HeatMailService;
 import diplomska.heatmail.service.UserService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import java.util.List;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.*;
 
 @Service
 public class HeatMailServiceImpl implements HeatMailService {
@@ -31,6 +34,9 @@ public class HeatMailServiceImpl implements HeatMailService {
 
     private final Gson gson = new GsonBuilder().create();
 
+    private final String variableSeparator = ";";
+    private final String variableRegex = "%noData%";
+
 
     @Autowired
     public HeatMailServiceImpl(JavaMailSender mailSender, UserService userService, HeatMailRepository heatMailRepository, KafkaProducer kafkaProducer) {
@@ -41,14 +47,14 @@ public class HeatMailServiceImpl implements HeatMailService {
     }
 
     @Override
-    public void sendEmail(MailDto mailDto) {
-       SimpleMailMessage message = new SimpleMailMessage();
-       message.setTo(mailDto.getTo());
-       message.setSubject(mailDto.getTitle());
-       message.setText(mailDto.getBody());
+    public void sendEmail(MailDto mailDto) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        message.setRecipients(MimeMessage.RecipientType.TO ,mailDto.getTo());
+        message.setSubject(mailDto.getTitle());
+        message.setContent(mailDto.getBody(),"text/html; charset=utf-8");
         try {
             mailSender.send(message);
-            heatMailRepository.updateStatusById(HeatMailStatusEnum.FINISHED, mailDto.getId());
+            heatMailRepository.updateStatusAndSent_atById(HeatMailStatusEnum.FINISHED, new Date(),mailDto.getId());
         } catch (Exception e) {
             heatMailRepository.updateStatusById(HeatMailStatusEnum.FAILED, mailDto.getId());
         }
@@ -65,7 +71,18 @@ public class HeatMailServiceImpl implements HeatMailService {
             mailDto.setId(heatMail.getId());
             mailDto.setTo(heatMail.getMail_receiver());
             mailDto.setTitle(heatMail.getMail_title());
-            mailDto.setBody(heatMail.getMail_body());
+
+            String mailBody = heatMail.getMail_body();
+            if (null != heatMail.getMail_body_variables()) {
+                List<String> mailBodyVariableList = new ArrayList<String>(Arrays.asList(heatMail.getMail_body_variables().split(variableSeparator)));
+
+                for(String mailBodyVariable : mailBodyVariableList) {
+                    mailBody = mailBody.replaceFirst(variableRegex,mailBodyVariable);
+                }
+            }
+
+            mailDto.setBody(mailBody);
+
 
             try {
                 kafkaProducer.sendMailMessage(gson.toJson(mailDto));
@@ -95,6 +112,7 @@ public class HeatMailServiceImpl implements HeatMailService {
                 .mail_body(heatMailDto.getMail_body())
                 .mail_title(heatMailDto.getMail_title())
                 .mail_receiver(heatMailDto.getMail_receiver())
+                .mail_body_variables(heatMailDto.getMail_body_variables())
                 .build();
         return heatMail;
     }

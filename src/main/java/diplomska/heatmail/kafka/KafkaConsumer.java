@@ -3,6 +3,7 @@ package diplomska.heatmail.kafka;
 import com.google.gson.Gson;
 import diplomska.heatmail.dto.MailDto;
 import diplomska.heatmail.service.HeatMailService;
+import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -22,7 +23,7 @@ public class KafkaConsumer {
     }
 
     @KafkaListener(topics = "${spring.kafka.consumer.topic}", groupId = "${spring.kafka.consumer.group-id}")
-    public void receiveJson(String event) {
+    public void receiveJson(String event) throws MessagingException {
        MailDto mailMessage = gson.fromJson(event, MailDto.class);
        heatMailService.sendEmail(mailMessage);
     }

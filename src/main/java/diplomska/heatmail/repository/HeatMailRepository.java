@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,14 @@ public interface HeatMailRepository extends JpaRepository<HeatMail, String> {
     @Modifying
     @Query("update HeatMail h set h.status = ?1 where h.id = ?2")
     int updateStatusById(HeatMailStatusEnum status, String id);
+
+    @Transactional
+    @Modifying
+    @Query("update HeatMail h set h.status = ?1, h.sent_at = ?2 where h.id = ?3")
+    int updateStatusAndSent_atById(HeatMailStatusEnum status, Date sent_at, String id);
+
+
+
 
 
 

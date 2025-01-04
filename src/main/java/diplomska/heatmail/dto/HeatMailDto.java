@@ -27,4 +27,7 @@ public class HeatMailDto {
 
     @JsonProperty("mail_receiver")
     private String mail_receiver;
+
+    @JsonProperty("mail_body_variables")
+    private String mail_body_variables;
 }

@@ -5,6 +5,7 @@ import lombok.*;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
@@ -51,5 +52,8 @@ public class HeatMail {
 
     @Column(name="sent_at")
     private Date sent_at;
+
+    @Column(name = "mail_body_variables")
+    private String mail_body_variables;
 
 }
