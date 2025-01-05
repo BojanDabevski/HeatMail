@@ -14,12 +14,9 @@ import diplomska.heatmail.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -116,4 +113,18 @@ public class HeatMailServiceImpl implements HeatMailService {
                 .build();
         return heatMail;
     }
+
+    //obid za attachment
+//    String base64="/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAcHBwcIBwgJCQgMDAsMD/psQZ//Z";
+//    byte[] data = DatatypeConverter.parseBase64Binary(base64);
+//    String path = "D:/Privatno/Diplomska/HeatMail/HeatMail/src/main/resources" + "/" + "nameFile.png";
+//    File file = new File(path);
+//
+//    OutputStream outputStream = null;
+//        try {
+//        outputStream = new BufferedOutputStream(new FileOutputStream(file));
+//    } catch (FileNotFoundException e) {
+//        throw new RuntimeException(e);
+//    }
+//        helper.addAttachment("", (DataSource) outputStream);
 }
