@@ -55,6 +55,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(new MvcRequestMatcher(handlerMappingIntrospector, "/auth/login"),
