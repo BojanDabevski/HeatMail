@@ -30,6 +30,11 @@ public interface HeatMailRepository extends JpaRepository<HeatMail, String> {
             "and status ='3'", nativeQuery = true)
     List<HeatMail> findUsersFailedHeatMailForMonthAndYear(String userId, String month, String year);
 
+    @Query(value = "select * from heat_mail " +
+            "where user_id =:userId " +
+            "and `month` =:month " +
+            "and `year` =:year ", nativeQuery = true)
+    List<HeatMail> findUsersHeatMailForMonthAndYear(String userId, String month, String year);
     @Transactional
     @Modifying
     @Query("update HeatMail h set h.status = ?1 where h.id = ?2")

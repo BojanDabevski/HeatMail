@@ -1,5 +1,6 @@
 package diplomska.heatmail.service;
 
+import diplomska.heatmail.dto.HeatMailDashboardDto;
 import diplomska.heatmail.dto.HeatMailDto;
 import diplomska.heatmail.dto.MailDto;
 import diplomska.heatmail.model.HeatMail;
@@ -13,5 +14,9 @@ public interface HeatMailService {
 
     void saveHeatMail(List<HeatMailDto> heatMailDto);
 
+    List<HeatMailDashboardDto> getMailDashboard(String month, String year);
+
     HeatMail mapHeatMailDtoToHeatMail(HeatMailDto heatMailDto);
+
+    HeatMailDashboardDto mapHeatMailToHeatMailDashboardDto(HeatMail heatMail);
 }

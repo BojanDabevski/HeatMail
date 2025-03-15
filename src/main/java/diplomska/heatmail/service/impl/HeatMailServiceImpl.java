@@ -2,6 +2,7 @@ package diplomska.heatmail.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import diplomska.heatmail.dto.HeatMailDashboardDto;
 import diplomska.heatmail.dto.HeatMailDto;
 import diplomska.heatmail.dto.MailDto;
 import diplomska.heatmail.kafka.KafkaProducer;
@@ -99,6 +100,20 @@ public class HeatMailServiceImpl implements HeatMailService {
     }
 
     @Override
+    public List<HeatMailDashboardDto> getMailDashboard(String month, String year) {
+        User user = userService.getUserFromToken();
+        List<HeatMail> heatMailList = heatMailRepository.findUsersHeatMailForMonthAndYear(user.getId(), month, year);
+
+        List<HeatMailDashboardDto> heatMailDashboardDtoList = new ArrayList<>();
+
+        for (HeatMail heatMail : heatMailList) {
+            heatMailDashboardDtoList.add(mapHeatMailToHeatMailDashboardDto(heatMail));
+        }
+
+        return heatMailDashboardDtoList;
+    }
+
+    @Override
     public HeatMail mapHeatMailDtoToHeatMail(HeatMailDto heatMailDto) {
         HeatMail heatMail = HeatMail.builder()
                 .id(String.valueOf(UUID.randomUUID()))
@@ -112,6 +127,22 @@ public class HeatMailServiceImpl implements HeatMailService {
                 .mail_body_variables(heatMailDto.getMail_body_variables())
                 .build();
         return heatMail;
+    }
+
+    @Override
+    public HeatMailDashboardDto mapHeatMailToHeatMailDashboardDto(HeatMail heatMail) {
+        HeatMailDashboardDto heatMailDashboardDto = HeatMailDashboardDto.builder()
+                .month(heatMail.getMonth())
+                .year(heatMail.getYear())
+                .mail_receiver(heatMail.getMail_receiver())
+                .mail_title(heatMail.getMail_title())
+                .mail_body(heatMail.getMail_body())
+                .inserted_at(heatMail.getInserted_at())
+                .sent_at(heatMail.getSent_at())
+                .mail_status(heatMail.getStatus().toString())
+                .build();
+
+        return heatMailDashboardDto;
     }
 
     //obid za attachment

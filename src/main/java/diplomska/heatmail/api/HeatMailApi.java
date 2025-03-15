@@ -1,8 +1,10 @@
 package diplomska.heatmail.api;
 
 import diplomska.heatmail.dto.DateDto;
+import diplomska.heatmail.dto.HeatMailDashboardDto;
 import diplomska.heatmail.dto.HeatMailDto;
 import diplomska.heatmail.dto.RegisterUserDto;
+import diplomska.heatmail.model.HeatMail;
 import diplomska.heatmail.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,4 +25,8 @@ public interface HeatMailApi {
             method = RequestMethod.POST)
     ResponseEntity<Void> insertMail(@RequestBody List<HeatMailDto> heatMailDtoList);
 
+    @RequestMapping(value = "/getMailDashboard",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+    ResponseEntity<List<HeatMailDashboardDto>> getMailDashboard(@RequestBody DateDto dateDto);
 }
