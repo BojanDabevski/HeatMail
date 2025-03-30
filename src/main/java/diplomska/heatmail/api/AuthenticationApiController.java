@@ -27,13 +27,28 @@ public class AuthenticationApiController implements AuthenticationApi{
 
     @Override
     public ResponseEntity<User> register(RegisterUserDto registerUserDto) throws Exception {
-        if (!userService.checkIfUserExists(registerUserDto.getEmail())) {
+        if (registerUserDto.getEmail().equals("") && registerUserDto.getPassword().equals("") && registerUserDto.getFullName().equals("")) {
+            throw new Exception("Email, Password and Full Name are required.");
+        } else if (!registerUserDto.getEmail().equals("") && registerUserDto.getPassword().equals("") && registerUserDto.getFullName().equals("")) {
+            throw new Exception("Password and Full Name are required.");
+        } else if (registerUserDto.getEmail().equals("") && !registerUserDto.getPassword().equals("") && registerUserDto.getFullName().equals("")) {
+            throw new Exception("Email and Full Name are required.");
+        } else if (registerUserDto.getEmail().equals("") && registerUserDto.getPassword().equals("") && !registerUserDto.getFullName().equals("")) {
+            throw new Exception("Email and Password are required.");
+        } else if (!registerUserDto.getEmail().equals("") && !registerUserDto.getPassword().equals("") && registerUserDto.getFullName().equals("")) {
+            throw new Exception("Full Name is required.");
+        } else if (!registerUserDto.getEmail().equals("") && registerUserDto.getPassword().equals("") && !registerUserDto.getFullName().equals("")) {
+            throw new Exception("Password is required.");
+        } else if (registerUserDto.getEmail().equals("") && !registerUserDto.getPassword().equals("") && !registerUserDto.getFullName().equals("")) {
+            throw new Exception("Email is required.");
+        } else if (!registerUserDto.getEmail().contains("@")) {
+            throw new Exception("Please enter a valid email address.");
+        } else if (!userService.checkIfUserExists(registerUserDto.getEmail())) {
             User registeredUser = authenticationService.signup(registerUserDto);
             return ResponseEntity.ok(registeredUser);
         } else {
-           throw new Exception("Email already exists");
+           throw new Exception("This email is already in use. Try registering with different email.");
         }
-
     }
 
     @Override
