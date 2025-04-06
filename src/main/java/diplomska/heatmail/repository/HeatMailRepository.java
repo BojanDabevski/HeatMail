@@ -35,6 +35,17 @@ public interface HeatMailRepository extends JpaRepository<HeatMail, String> {
             "and `month` =:month " +
             "and `year` =:year ", nativeQuery = true)
     List<HeatMail> findUsersHeatMailForMonthAndYear(String userId, String month, String year);
+
+    @Query(value = "select count(*) from heat_mail " +
+            "where user_id =:userId " +
+            "and `month` =:month " +
+            "and `year` =:year " +
+            "and status =:status", nativeQuery = true)
+    List<HeatMail> countUsersHeatMailForStatus(String userId, String month, String year, String status);
+
+    long countByUser_IdAndMonthAndYearAndStatus(String id, String month, String year, HeatMailStatusEnum status);
+
+    long countByUser_IdAndMonthAndYear(String id, String month, String year);
     @Transactional
     @Modifying
     @Query("update HeatMail h set h.status = ?1 where h.id = ?2")

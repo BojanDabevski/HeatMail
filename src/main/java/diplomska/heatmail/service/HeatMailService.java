@@ -2,6 +2,7 @@ package diplomska.heatmail.service;
 
 import diplomska.heatmail.dto.HeatMailDashboardDto;
 import diplomska.heatmail.dto.HeatMailDto;
+import diplomska.heatmail.dto.HeatMailStatisticsDto;
 import diplomska.heatmail.dto.MailDto;
 import diplomska.heatmail.model.HeatMail;
 import jakarta.mail.MessagingException;
@@ -16,6 +17,7 @@ public interface HeatMailService {
 
     List<HeatMailDashboardDto> getMailDashboard(String month, String year);
 
+    List<HeatMailStatisticsDto> getMailStatistics(String month, String year);
     HeatMail mapHeatMailDtoToHeatMail(HeatMailDto heatMailDto);
 
     HeatMailDashboardDto mapHeatMailToHeatMailDashboardDto(HeatMail heatMail);

@@ -3,6 +3,7 @@ package diplomska.heatmail.api;
 import diplomska.heatmail.dto.DateDto;
 import diplomska.heatmail.dto.HeatMailDashboardDto;
 import diplomska.heatmail.dto.HeatMailDto;
+import diplomska.heatmail.dto.HeatMailStatisticsDto;
 import diplomska.heatmail.model.HeatMail;
 import diplomska.heatmail.service.HeatMailService;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,11 @@ public class HeatMailApiController implements HeatMailApi{
     @Override
     public ResponseEntity<List<HeatMailDashboardDto>> getMailDashboard(DateDto dateDto) {
         return ResponseEntity.ok(heatMailService.getMailDashboard(dateDto.getMonth(), dateDto.getYear()));
+    }
+
+    @Override
+    public ResponseEntity<List<HeatMailStatisticsDto>> getMailStatistics(DateDto dateDto) {
+        return ResponseEntity.ok(heatMailService.getMailStatistics(dateDto.getMonth(), dateDto.getYear()));
     }
 
 

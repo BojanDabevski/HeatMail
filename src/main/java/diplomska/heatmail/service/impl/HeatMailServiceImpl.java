@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import diplomska.heatmail.dto.HeatMailDashboardDto;
 import diplomska.heatmail.dto.HeatMailDto;
+import diplomska.heatmail.dto.HeatMailStatisticsDto;
 import diplomska.heatmail.dto.MailDto;
 import diplomska.heatmail.kafka.KafkaProducer;
 import diplomska.heatmail.model.HeatMail;
@@ -111,6 +112,33 @@ public class HeatMailServiceImpl implements HeatMailService {
         }
 
         return heatMailDashboardDtoList;
+    }
+
+    @Override
+    public List<HeatMailStatisticsDto> getMailStatistics(String month, String year) {
+        List<HeatMailStatisticsDto> heatMailStatisticsDtoList = new ArrayList<>();
+        User user = userService.getUserFromToken();
+
+        long statisticForAll = heatMailRepository.countByUser_IdAndMonthAndYear(user.getId(), month, year);
+
+        HeatMailStatisticsDto heatMailStatisticsDtoForAll = new HeatMailStatisticsDto();
+        heatMailStatisticsDtoForAll.setName("ALL_HEATMAIL");
+        heatMailStatisticsDtoForAll.setValue(statisticForAll);
+
+        heatMailStatisticsDtoList.add(heatMailStatisticsDtoForAll);
+
+
+        for(HeatMailStatusEnum heatMailStatusEnum : HeatMailStatusEnum.values()){
+            long statistcForEnum = heatMailRepository.countByUser_IdAndMonthAndYearAndStatus(user.getId(), month, year, heatMailStatusEnum);
+
+            HeatMailStatisticsDto heatMailStatisticsDto = new HeatMailStatisticsDto();
+            heatMailStatisticsDto.setName(heatMailStatusEnum.toString());
+            heatMailStatisticsDto.setValue(statistcForEnum);
+
+            heatMailStatisticsDtoList.add(heatMailStatisticsDto);
+
+        }
+        return heatMailStatisticsDtoList;
     }
 
     @Override

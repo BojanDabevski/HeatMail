@@ -1,9 +1,6 @@
 package diplomska.heatmail.api;
 
-import diplomska.heatmail.dto.DateDto;
-import diplomska.heatmail.dto.HeatMailDashboardDto;
-import diplomska.heatmail.dto.HeatMailDto;
-import diplomska.heatmail.dto.RegisterUserDto;
+import diplomska.heatmail.dto.*;
 import diplomska.heatmail.model.HeatMail;
 import diplomska.heatmail.model.User;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +24,11 @@ public interface HeatMailApi {
 
     @RequestMapping(value = "/getMailDashboard",
             produces = { "application/json" },
-            method = RequestMethod.GET)
+            method = RequestMethod.POST)
     ResponseEntity<List<HeatMailDashboardDto>> getMailDashboard(@RequestBody DateDto dateDto);
+
+    @RequestMapping(value = "/getMailStatistics",
+            produces = { "application/json" },
+            method = RequestMethod.POST)
+    ResponseEntity<List<HeatMailStatisticsDto>> getMailStatistics(@RequestBody DateDto dateDto);
 }
