@@ -31,4 +31,9 @@ public interface HeatMailApi {
             produces = { "application/json" },
             method = RequestMethod.POST)
     ResponseEntity<List<HeatMailStatisticsDto>> getMailStatistics(@RequestBody DateDto dateDto);
+
+    @RequestMapping(value = "/getAvailableMailToSendCount",
+            produces = { "application/json" },
+            method = RequestMethod.POST)
+    ResponseEntity<HeatMailStatisticsDto> getAvailableMailToSendCount(@RequestBody DateDto dateDto);
 }

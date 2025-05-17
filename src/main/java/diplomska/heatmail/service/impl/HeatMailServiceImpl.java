@@ -142,6 +142,19 @@ public class HeatMailServiceImpl implements HeatMailService {
     }
 
     @Override
+    public HeatMailStatisticsDto getAvailableMailToSendCount(String month, String year) {
+        HeatMailStatisticsDto heatMailStatisticsDto = new HeatMailStatisticsDto();
+        User user = userService.getUserFromToken();
+
+        long statistcForEnum = heatMailRepository.countByUser_IdAndMonthAndYearAndStatus(user.getId(), month, year, HeatMailStatusEnum.IMPORTED);
+
+        heatMailStatisticsDto.setName(HeatMailStatusEnum.IMPORTED.toString());
+        heatMailStatisticsDto.setValue(statistcForEnum);
+
+        return heatMailStatisticsDto;
+    }
+
+    @Override
     public HeatMail mapHeatMailDtoToHeatMail(HeatMailDto heatMailDto) {
         HeatMail heatMail = HeatMail.builder()
                 .id(String.valueOf(UUID.randomUUID()))

@@ -18,6 +18,9 @@ public interface HeatMailService {
     List<HeatMailDashboardDto> getMailDashboard(String month, String year);
 
     List<HeatMailStatisticsDto> getMailStatistics(String month, String year);
+
+    HeatMailStatisticsDto getAvailableMailToSendCount(String month, String year);
+
     HeatMail mapHeatMailDtoToHeatMail(HeatMailDto heatMailDto);
 
     HeatMailDashboardDto mapHeatMailToHeatMailDashboardDto(HeatMail heatMail);

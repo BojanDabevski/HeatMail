@@ -49,5 +49,10 @@ public class HeatMailApiController implements HeatMailApi{
         return ResponseEntity.ok(heatMailService.getMailStatistics(dateDto.getMonth(), dateDto.getYear()));
     }
 
+    @Override
+    public ResponseEntity<HeatMailStatisticsDto> getAvailableMailToSendCount(DateDto dateDto) {
+        return ResponseEntity.ok(heatMailService.getAvailableMailToSendCount(dateDto.getMonth(), dateDto.getYear()));
+    }
+
 
 }
