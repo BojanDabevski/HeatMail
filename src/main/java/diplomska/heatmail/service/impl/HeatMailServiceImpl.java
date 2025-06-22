@@ -2,19 +2,23 @@ package diplomska.heatmail.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import diplomska.heatmail.dto.HeatMailDashboardDto;
-import diplomska.heatmail.dto.HeatMailDto;
-import diplomska.heatmail.dto.HeatMailStatisticsDto;
-import diplomska.heatmail.dto.MailDto;
+import diplomska.heatmail.dto.*;
 import diplomska.heatmail.kafka.KafkaProducer;
 import diplomska.heatmail.model.HeatMail;
+import diplomska.heatmail.model.HeatMailAttachment;
 import diplomska.heatmail.model.User;
 import diplomska.heatmail.model.enums.HeatMailStatusEnum;
+import diplomska.heatmail.repository.HeatMailAttachmentRepository;
 import diplomska.heatmail.repository.HeatMailRepository;
 import diplomska.heatmail.service.HeatMailService;
 import diplomska.heatmail.service.UserService;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.*;
+
+import jakarta.mail.util.ByteArrayDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,8 @@ public class HeatMailServiceImpl implements HeatMailService {
 
     private final KafkaProducer kafkaProducer;
 
+    private final HeatMailAttachmentRepository heatMailAttachmentRepository;
+
     private final Gson gson = new GsonBuilder().create();
 
     private final String variableSeparator = ";";
@@ -38,11 +44,12 @@ public class HeatMailServiceImpl implements HeatMailService {
 
 
     @Autowired
-    public HeatMailServiceImpl(JavaMailSender mailSender, UserService userService, HeatMailRepository heatMailRepository, KafkaProducer kafkaProducer) {
+    public HeatMailServiceImpl(JavaMailSender mailSender, UserService userService, HeatMailRepository heatMailRepository, KafkaProducer kafkaProducer, HeatMailAttachmentRepository heatMailAttachmentRepository) {
         this.mailSender = mailSender;
         this.userService = userService;
         this.heatMailRepository = heatMailRepository;
         this.kafkaProducer = kafkaProducer;
+        this.heatMailAttachmentRepository = heatMailAttachmentRepository;
     }
 
     @Override
@@ -54,6 +61,41 @@ public class HeatMailServiceImpl implements HeatMailService {
         try {
             mailSender.send(message);
             heatMailRepository.updateStatusAndSent_atById(HeatMailStatusEnum.FINISHED, new Date(),mailDto.getId());
+        } catch (Exception e) {
+            heatMailRepository.updateStatusById(HeatMailStatusEnum.FAILED, mailDto.getId());
+        }
+    }
+
+    @Override
+    public void sendMultipartMail(MailDto mailDto) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMultipart multipart = new MimeMultipart();
+
+        message.setRecipients(MimeMessage.RecipientType.TO, mailDto.getTo());
+        message.setSubject(mailDto.getTitle());
+
+        // Create the message body part (HTML)
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setContent(mailDto.getBody(), "text/html; charset=utf-8");
+        multipart.addBodyPart(messageBodyPart);
+
+        // Create the attachment part
+        if (null!=mailDto.getAttachment() && null != mailDto.getAttachment_title()) {
+            MimeBodyPart attachmentPart = new MimeBodyPart();
+            byte[] pdfBytes = Base64.getDecoder().decode(mailDto.getAttachment());
+            DataSource dataSource = new ByteArrayDataSource(pdfBytes, "application/pdf");
+            attachmentPart.setDataHandler(new DataHandler(dataSource));
+            attachmentPart.setFileName(mailDto.getAttachment_title());
+            multipart.addBodyPart(attachmentPart);
+
+        }
+
+        // Set content
+        message.setContent(multipart);
+
+        try {
+            mailSender.send(message);
+            heatMailRepository.updateStatusAndSent_atById(HeatMailStatusEnum.FINISHED, new Date(), mailDto.getId());
         } catch (Exception e) {
             heatMailRepository.updateStatusById(HeatMailStatusEnum.FAILED, mailDto.getId());
         }
@@ -80,8 +122,14 @@ public class HeatMailServiceImpl implements HeatMailService {
                 }
             }
 
+            if (null != heatMail.getMail_attachment_title()) {
+                List<HeatMailAttachment> heatMailAttachment = heatMailAttachmentRepository.findByUser_IdAndMail_attachment_title(user.getId(),heatMail.getMail_attachment_title());
+                if (heatMailAttachment.size() >0) {
+                    mailDto.setAttachment(heatMailAttachment.get(0).getMail_attachment_body());
+                    mailDto.setAttachment_title(heatMailAttachment.get(0).getMail_attachment_title());
+                }
+            }
             mailDto.setBody(mailBody);
-
 
             try {
                 kafkaProducer.sendMailMessage(gson.toJson(mailDto));
@@ -97,6 +145,14 @@ public class HeatMailServiceImpl implements HeatMailService {
         for (HeatMailDto heatMailDto : heatMailDtoList) {
             HeatMail heatMail = mapHeatMailDtoToHeatMail(heatMailDto);
             heatMailRepository.save(heatMail);
+        }
+    }
+
+    @Override
+    public void saveHeatMailAttachments(List<HeatMailAttachmentDto> heatMailAttachmentDtoList) {
+        for (HeatMailAttachmentDto heatMailAttachmentDto : heatMailAttachmentDtoList) {
+            HeatMailAttachment heatMailAttachment = mapHeatMailAttachmentDtoToHeatMailAttachment(heatMailAttachmentDto);
+            heatMailAttachmentRepository.save(heatMailAttachment);
         }
     }
 
@@ -168,6 +224,19 @@ public class HeatMailServiceImpl implements HeatMailService {
                 .mail_body_variables(heatMailDto.getMail_body_variables())
                 .build();
         return heatMail;
+    }
+
+    @Override
+    public HeatMailAttachment mapHeatMailAttachmentDtoToHeatMailAttachment(HeatMailAttachmentDto heatMailAttachmentDto) {
+
+        HeatMailAttachment heatMailAttachment = HeatMailAttachment.builder()
+                .id(String.valueOf(UUID.randomUUID()))
+                .user(userService.getUserFromToken())
+                .mail_attachment_body(heatMailAttachmentDto.getMail_attachment_body())
+                .mail_attachment_title(heatMailAttachmentDto.getMail_attachment_title())
+                .build();
+
+        return heatMailAttachment;
     }
 
     @Override

@@ -27,6 +27,6 @@ public class KafkaConsumer {
     @KafkaListener(topics = "${spring.kafka.consumer.topic}", groupId = "${spring.kafka.consumer.group-id}")
     public void receiveJson(String event) throws MessagingException {
        MailDto mailMessage = gson.fromJson(event, MailDto.class);
-       heatMailService.sendEmail(mailMessage);
+       heatMailService.sendMultipartMail(mailMessage);
     }
 }

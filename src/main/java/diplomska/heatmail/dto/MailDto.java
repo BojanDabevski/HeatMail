@@ -23,4 +23,11 @@ public class MailDto {
 
     @JsonProperty("to")
     private String to;
+
+    @JsonProperty("attachment_title")
+    private String attachment_title;
+
+    @JsonProperty("attachment")
+    private String attachment;
+
 }

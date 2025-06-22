@@ -3,6 +3,7 @@ package diplomska.heatmail.api;
 import diplomska.heatmail.dto.*;
 import diplomska.heatmail.model.HeatMail;
 import diplomska.heatmail.model.User;
+import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +17,22 @@ public interface HeatMailApi {
             method = RequestMethod.POST)
     ResponseEntity<Void> sendMail(@RequestBody DateDto dateDto);
 
+    @RequestMapping(value = "/sendSpecificMail",
+            produces = { "application/json" },
+            method = RequestMethod.POST)
+    ResponseEntity<Void> sendSpecificMail(@RequestBody MailDto dateDto) throws MessagingException;
+
     @RequestMapping(value="/insertMail",
             produces = { "application/json" },
             consumes = { "application/json" },
             method = RequestMethod.POST)
     ResponseEntity<Void> insertMail(@RequestBody List<HeatMailDto> heatMailDtoList);
+
+    @RequestMapping(value="/insertMailAttachment",
+            produces = { "application/json" },
+            consumes = { "application/json" },
+            method = RequestMethod.POST)
+    ResponseEntity<Void> insertMailAttachment(@RequestBody List<HeatMailAttachmentDto> heatMailAttachmentDtoList);
 
     @RequestMapping(value = "/getMailDashboard",
             produces = { "application/json" },

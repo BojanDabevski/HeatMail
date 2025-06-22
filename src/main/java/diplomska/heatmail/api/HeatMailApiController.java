@@ -1,11 +1,9 @@
 package diplomska.heatmail.api;
 
-import diplomska.heatmail.dto.DateDto;
-import diplomska.heatmail.dto.HeatMailDashboardDto;
-import diplomska.heatmail.dto.HeatMailDto;
-import diplomska.heatmail.dto.HeatMailStatisticsDto;
+import diplomska.heatmail.dto.*;
 import diplomska.heatmail.model.HeatMail;
 import diplomska.heatmail.service.HeatMailService;
+import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,8 +32,20 @@ public class HeatMailApiController implements HeatMailApi{
     }
 
     @Override
+    public ResponseEntity<Void> sendSpecificMail(MailDto mailDto) throws MessagingException {
+        heatMailService.sendMultipartMail(mailDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
     public ResponseEntity<Void> insertMail(List<HeatMailDto> heatMailDtoList) {
         heatMailService.saveHeatMail(heatMailDtoList);
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> insertMailAttachment(List<HeatMailAttachmentDto> heatMailAttachmentDtoList) {
+        heatMailService.saveHeatMailAttachments(heatMailAttachmentDtoList);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 

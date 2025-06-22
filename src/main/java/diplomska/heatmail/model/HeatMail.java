@@ -56,4 +56,7 @@ public class HeatMail {
     @Column(name = "mail_body_variables")
     private String mail_body_variables;
 
+    @Column(name = "mail_attachment_title")
+    private String mail_attachment_title;
+
 }
