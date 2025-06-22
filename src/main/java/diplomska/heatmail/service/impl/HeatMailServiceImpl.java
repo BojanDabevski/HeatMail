@@ -202,8 +202,10 @@ public class HeatMailServiceImpl implements HeatMailService {
         HeatMailStatisticsDto heatMailStatisticsDto = new HeatMailStatisticsDto();
         User user = userService.getUserFromToken();
 
-        long statistcForEnum = heatMailRepository.countByUser_IdAndMonthAndYearAndStatus(user.getId(), month, year, HeatMailStatusEnum.IMPORTED);
+        long statistcForEnumImported = heatMailRepository.countByUser_IdAndMonthAndYearAndStatus(user.getId(), month, year, HeatMailStatusEnum.IMPORTED);
+        long statistcForEnumFailed = heatMailRepository.countByUser_IdAndMonthAndYearAndStatus(user.getId(), month, year, HeatMailStatusEnum.FAILED);
 
+        long statistcForEnum = statistcForEnumFailed + statistcForEnumImported;
         heatMailStatisticsDto.setName(HeatMailStatusEnum.IMPORTED.toString());
         heatMailStatisticsDto.setValue(statistcForEnum);
 
@@ -250,6 +252,7 @@ public class HeatMailServiceImpl implements HeatMailService {
                 .inserted_at(heatMail.getInserted_at())
                 .sent_at(heatMail.getSent_at())
                 .mail_status(heatMail.getStatus().toString())
+                .mail_attachment_title(heatMail.getMail_attachment_title())
                 .build();
 
         return heatMailDashboardDto;

@@ -37,5 +37,8 @@ public class HeatMailDashboardDto {
     @JsonProperty("mail_status")
     private String mail_status;
 
+    @JsonProperty("mail_attachment_title")
+    private String mail_attachment_title;
+
 
 }
