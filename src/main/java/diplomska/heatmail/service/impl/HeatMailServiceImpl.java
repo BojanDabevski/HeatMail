@@ -224,6 +224,7 @@ public class HeatMailServiceImpl implements HeatMailService {
                 .mail_title(heatMailDto.getMail_title())
                 .mail_receiver(heatMailDto.getMail_receiver())
                 .mail_body_variables(heatMailDto.getMail_body_variables())
+                .mail_attachment_title(heatMailDto.getMail_attachment_title())
                 .build();
         return heatMail;
     }
@@ -258,17 +259,13 @@ public class HeatMailServiceImpl implements HeatMailService {
         return heatMailDashboardDto;
     }
 
-    //obid za attachment
-//    String base64="/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAcHBwcIBwgJCQgMDAsMD/psQZ//Z";
-//    byte[] data = DatatypeConverter.parseBase64Binary(base64);
-//    String path = "D:/Privatno/Diplomska/HeatMail/HeatMail/src/main/resources" + "/" + "nameFile.png";
-//    File file = new File(path);
-//
-//    OutputStream outputStream = null;
-//        try {
-//        outputStream = new BufferedOutputStream(new FileOutputStream(file));
-//    } catch (FileNotFoundException e) {
-//        throw new RuntimeException(e);
-//    }
-//        helper.addAttachment("", (DataSource) outputStream);
+    @Override
+    public boolean checkIfAttachmentExistsForUser(HeatMailAttachmentDto heatMailAttachmentDto) {
+        if (heatMailAttachmentRepository.findByUser_IdAndMail_attachment_title(
+                userService.getUserFromToken().getId(), heatMailAttachmentDto.getMail_attachment_title()).size() > 0) {
+            return true;
+        } else{
+            return false;
+        }
+    }
 }

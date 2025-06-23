@@ -27,4 +27,6 @@ public interface HeatMailService {
     HeatMailAttachment mapHeatMailAttachmentDtoToHeatMailAttachment(HeatMailAttachmentDto heatMailAttachmentDto);
 
     HeatMailDashboardDto mapHeatMailToHeatMailDashboardDto(HeatMail heatMail);
+
+    boolean checkIfAttachmentExistsForUser(HeatMailAttachmentDto heatMailAttachmentDto);
 }

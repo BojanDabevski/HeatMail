@@ -32,7 +32,7 @@ public interface HeatMailApi {
             produces = { "application/json" },
             consumes = { "application/json" },
             method = RequestMethod.POST)
-    ResponseEntity<Void> insertMailAttachment(@RequestBody List<HeatMailAttachmentDto> heatMailAttachmentDtoList);
+    ResponseEntity<Void> insertMailAttachment(@RequestBody List<HeatMailAttachmentDto> heatMailAttachmentDtoList) throws Exception;
 
     @RequestMapping(value = "/getMailDashboard",
             produces = { "application/json" },

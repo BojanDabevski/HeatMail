@@ -44,7 +44,10 @@ public class HeatMailApiController implements HeatMailApi{
     }
 
     @Override
-    public ResponseEntity<Void> insertMailAttachment(List<HeatMailAttachmentDto> heatMailAttachmentDtoList) {
+    public ResponseEntity<Void> insertMailAttachment(List<HeatMailAttachmentDto> heatMailAttachmentDtoList) throws Exception {
+        if (heatMailService.checkIfAttachmentExistsForUser(heatMailAttachmentDtoList.get(0))) {
+            throw new Exception("Attachment already exists for this user.");
+        }
         heatMailService.saveHeatMailAttachments(heatMailAttachmentDtoList);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
