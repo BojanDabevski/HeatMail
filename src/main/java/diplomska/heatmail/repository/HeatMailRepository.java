@@ -56,10 +56,11 @@ public interface HeatMailRepository extends JpaRepository<HeatMail, String> {
     @Query("update HeatMail h set h.status = ?1, h.sent_at = ?2 where h.id = ?3")
     int updateStatusAndSent_atById(HeatMailStatusEnum status, Date sent_at, String id);
 
-
-
-
-
+    @Query(value = "DELETE FROM heat_mail " +
+            "where user_id =:userId " +
+            "and `month` =:month " +
+            "and `year` =:year ",nativeQuery = true)
+    Long deleteByUserAndMonthAndYear(String userId, String month, String year);
 
 
 }

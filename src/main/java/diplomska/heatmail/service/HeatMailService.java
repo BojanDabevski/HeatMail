@@ -29,4 +29,6 @@ public interface HeatMailService {
     HeatMailDashboardDto mapHeatMailToHeatMailDashboardDto(HeatMail heatMail);
 
     boolean checkIfAttachmentExistsForUser(HeatMailAttachmentDto heatMailAttachmentDto);
+
+    void deleteMailForMonthAndYearForUser(String month, String year);
 }

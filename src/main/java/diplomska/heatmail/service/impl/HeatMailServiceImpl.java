@@ -268,4 +268,9 @@ public class HeatMailServiceImpl implements HeatMailService {
             return false;
         }
     }
+
+    @Override
+    public void deleteMailForMonthAndYearForUser(String month, String year) {
+        heatMailRepository.deleteByUserAndMonthAndYear(userService.getUserFromToken().getId(),month,year);
+    }
 }

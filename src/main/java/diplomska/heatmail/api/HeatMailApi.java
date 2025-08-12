@@ -17,6 +17,11 @@ public interface HeatMailApi {
             method = RequestMethod.POST)
     ResponseEntity<Void> sendMail(@RequestBody DateDto dateDto);
 
+    @RequestMapping(value = "/deleteMail",
+            produces = { "application/json" },
+            method = RequestMethod.DELETE)
+    ResponseEntity<Void> deleteMail(@RequestBody DateDto dateDto);
+
     @RequestMapping(value = "/sendSpecificMail",
             produces = { "application/json" },
             method = RequestMethod.POST)
