@@ -273,4 +273,25 @@ public class HeatMailServiceImpl implements HeatMailService {
     public void deleteMailForMonthAndYearForUser(String month, String year) {
         heatMailRepository.deleteByUserAndMonthAndYear(userService.getUserFromToken().getId(),month,year);
     }
+
+    @Override
+    public void deleteMailAttachment(HeatMailAttachmentDto heatMailAttachmentDto) {
+        heatMailAttachmentRepository.deleteHeatMailAttachment(userService.getUserFromToken().getId(), heatMailAttachmentDto.getMail_attachment_title(), heatMailAttachmentDto.getId());
+    }
+
+    @Override
+    public List<HeatMailAttachmentDto> getHeatMailAttachments() {
+        List<HeatMailAttachmentDto> heatMailAttachmentDtoList = new ArrayList<>();
+        List<HeatMailAttachment> heatMailAttachmentList = heatMailAttachmentRepository.findByUser_Id(userService.getUserFromToken().getId());
+
+        for (HeatMailAttachment heatMailAttachment : heatMailAttachmentList) {
+            HeatMailAttachmentDto heatMailAttachmentDto = HeatMailAttachmentDto.builder()
+                    .id(heatMailAttachment.getId())
+                    .mail_attachment_title(heatMailAttachment.getMail_attachment_title())
+                    .build();
+            heatMailAttachmentDtoList.add(heatMailAttachmentDto);
+        }
+
+        return heatMailAttachmentDtoList;
+    }
 }

@@ -1,6 +1,7 @@
 package diplomska.heatmail.api;
 
 import diplomska.heatmail.dto.*;
+import diplomska.heatmail.model.HeatMailAttachment;
 import diplomska.heatmail.service.HeatMailService;
 import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
@@ -63,6 +64,21 @@ public class HeatMailApiController implements HeatMailApi{
     @Override
     public ResponseEntity<List<HeatMailDashboardDto>> getMailDashboard(DateDto dateDto) {
         return ResponseEntity.ok(heatMailService.getMailDashboard(dateDto.getMonth(), dateDto.getYear()));
+    }
+
+    @Override
+    public ResponseEntity<List<HeatMailAttachmentDto>> getMailAttachmentDashboard() {
+        return ResponseEntity.ok(heatMailService.getHeatMailAttachments());
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteMailAttachment(HeatMailAttachmentDto heatMailAttachmentDto) {
+        try {
+            heatMailService.deleteMailAttachment(heatMailAttachmentDto);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override

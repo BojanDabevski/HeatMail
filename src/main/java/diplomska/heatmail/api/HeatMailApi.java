@@ -2,6 +2,7 @@ package diplomska.heatmail.api;
 
 import diplomska.heatmail.dto.*;
 import diplomska.heatmail.model.HeatMail;
+import diplomska.heatmail.model.HeatMailAttachment;
 import diplomska.heatmail.model.User;
 import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,16 @@ public interface HeatMailApi {
             produces = { "application/json" },
             method = RequestMethod.POST)
     ResponseEntity<List<HeatMailDashboardDto>> getMailDashboard(@RequestBody DateDto dateDto);
+
+    @RequestMapping(value = "/getMailAttachmentDashboard",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+    ResponseEntity<List<HeatMailAttachmentDto>> getMailAttachmentDashboard();
+
+    @RequestMapping(value = "/deleteMailAttachment",
+            produces = { "application/json" },
+            method = RequestMethod.DELETE)
+    ResponseEntity<Void> deleteMailAttachment(@RequestBody HeatMailAttachmentDto heatMailAttachmentDto);
 
     @RequestMapping(value = "/getMailStatistics",
             produces = { "application/json" },
