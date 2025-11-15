@@ -29,7 +29,6 @@ public class HeatMailApiController implements HeatMailApi{
         }
 
     }
-
     @Override
     public ResponseEntity<Void> deleteMail(DateDto dateDto) {
         try {
@@ -39,18 +38,18 @@ public class HeatMailApiController implements HeatMailApi{
             return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @Override
+    public ResponseEntity<Void> insertMail(List<HeatMailDto> heatMailDtoList) {
+        heatMailService.saveHeatMail(heatMailDtoList);
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
     @Override
     public ResponseEntity<Void> sendSpecificMail(MailDto mailDto) throws MessagingException {
         heatMailService.sendMultipartMail(mailDto);
         return ResponseEntity.ok().build();
     }
 
-    @Override
-    public ResponseEntity<Void> insertMail(List<HeatMailDto> heatMailDtoList) {
-        heatMailService.saveHeatMail(heatMailDtoList);
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
+
 
     @Override
     public ResponseEntity<Void> insertMailAttachment(List<HeatMailAttachmentDto> heatMailAttachmentDtoList) throws Exception {

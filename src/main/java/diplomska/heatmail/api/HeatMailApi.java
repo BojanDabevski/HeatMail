@@ -23,22 +23,25 @@ public interface HeatMailApi {
             method = RequestMethod.DELETE)
     ResponseEntity<Void> deleteMail(@RequestBody DateDto dateDto);
 
-    @RequestMapping(value = "/sendSpecificMail",
-            produces = { "application/json" },
-            method = RequestMethod.POST)
-    ResponseEntity<Void> sendSpecificMail(@RequestBody MailDto dateDto) throws MessagingException;
-
     @RequestMapping(value="/insertMail",
             produces = { "application/json" },
             consumes = { "application/json" },
             method = RequestMethod.POST)
     ResponseEntity<Void> insertMail(@RequestBody List<HeatMailDto> heatMailDtoList);
 
+    @RequestMapping(value = "/sendSpecificMail",
+            produces = { "application/json" },
+            method = RequestMethod.POST)
+    ResponseEntity<Void> sendSpecificMail(@RequestBody MailDto dateDto) throws MessagingException;
+
+
+
     @RequestMapping(value="/insertMailAttachment",
             produces = { "application/json" },
             consumes = { "application/json" },
             method = RequestMethod.POST)
-    ResponseEntity<Void> insertMailAttachment(@RequestBody List<HeatMailAttachmentDto> heatMailAttachmentDtoList) throws Exception;
+    ResponseEntity<Void> insertMailAttachment(@RequestBody List<HeatMailAttachmentDto> heatMailAttachmentDtoList)
+            throws Exception;
 
     @RequestMapping(value = "/getMailDashboard",
             produces = { "application/json" },
